@@ -28,7 +28,8 @@ class CallSchedulerService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         stopForeground(true)
+        super.onDestroy()
+
     }
 }

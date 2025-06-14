@@ -1,6 +1,7 @@
 package com.example.thecalltime
 
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -15,9 +16,12 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.thecalltime.databinding.ActivityMainBinding
 import java.util.*
 
@@ -51,7 +55,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        enableEdgeToEdge()
+
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+
+
+
+
+
         sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         setupUI()
@@ -172,6 +190,11 @@ class MainActivity : AppCompatActivity() {
         updateStatusText(phoneNumber, selectedSim, hour, minute, numCalls)
         showToast("$numCalls calls scheduled successfully")
     }
+
+
+    //>>>>>>>>>>>>>>>>>>>>>> CancelAllScheduledCalls
+
+
 
     private fun cancelAllScheduledCalls(showToast: Boolean = true) {
         val alarmManager = getSystemService(AlarmManager::class.java)
@@ -304,4 +327,20 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val CONTACT_PICK_REQUEST = 1001
     }
+
+
+    //<<<<<<<<<<<<<<< Alart Dailog
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setTitle("Exit App")
+            .setMessage("Are you sure you want to exit?")
+            .setPositiveButton("Yes") { _, _ ->
+//                super.onBackPressed() // exit the app
+                finish()
+            }
+            .setNegativeButton("No", null) // dismiss dialog
+            .show()
+    }
+
 }
